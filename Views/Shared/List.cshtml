@@ -1,0 +1,67 @@
+﻿@model IcbcodeContent
+@{
+    var items = Model.Childs(order_fields: (Model.Url == "/komandi" || Model.Url == "/sponsori") ? null : "content_publish desc, content_id desc");
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Breadcrumbs")
+
+<div class="container">
+    <div class="page-container">
+        <div class="content-wrap">
+            @* @Html.Partial("_LeftColumn") *@
+            <div class="content full-width">
+                @* full-width / right *@
+                <div class="content-title and-social">
+                    <h3 class="title">@Model.H1</h3>
+                    <div class="social">
+                        @Html.Partial("_Social")
+                    </div>
+                </div>
+                <div class="news-wrapper">
+                    <div class="row">
+                        @foreach (var item in items)
+                        {
+                            var image = item.GetImage(new string[] { "kartinka" });
+                            
+                            <a href="@item.Url" class="new">
+                                <div class="col-xs-4" style="@(image == null ? "display:none;" : null)">
+                                    <img src="@(image == null ? Url.Content("~/content/site/img/293x132.png") : image.Url)?w=293&h=132&mode=crop" alt="@(image == null ? null : image.Description)" />
+                                </div>
+                                <div class="@(image == null ? "col-xs-12" : "col-xs-8")">
+                                    <h4 class="title">@item.Link</h4>
+                                    <div class="shot-text">
+                                        @Html.Raw(item.ShortText)
+                                    </div>
+                                    @if (item.Publish.HasValue)
+                                    {
+                                        <p class="date">@item.Publish.Value.ToString("dd/MM/yyyy")</p>
+                                    }
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+                
+@*                    <div class="page-pagination">
+                        <a href="#" class="prev">Предыдущая</a>
+                        <p class="numbers">
+                            <a href="#">1</a>
+                            <a href="#" class="active">2</a>
+                            <a href="#">3</a>
+                            <a href="#">4</a>
+                            <a href="#">5</a>
+                            <a href="#">6</a>
+                            <a href="#">7</a>
+                            <a href="#">8</a>
+                            <a href="#">9</a>
+                        </p>
+                        <a href="#" class="next">Следующая</a>
+                    </div>      *@            
+
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+﻿@model IcbcodeContent
+
+<div class="container">
+    <div class="breadcrumbs">
+        <a href="@Url.Content("~/")">Главная</a>
+        @foreach (var item in Model.Parents)
+        {
+            <span>/ </span>
+            if (item.Url == Model.Url)
+            {
+            <span>@item.Link</span>
+            }
+            else
+            {
+            <a href="@item.Url">@item.Link</a>
+            }
+        }
+    </div>
+</div>

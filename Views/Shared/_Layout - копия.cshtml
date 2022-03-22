@@ -1,0 +1,100 @@
+﻿@model IcbcodeContent
+@{
+    var glavnoe_menyu = IcbcodeContent.Get(new string[] { "glavnoe-menyu" });
+
+    var settings = IcbcodeVariable.All(IcbcodeUtility.CurrentDomain);
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>@Model.Title</title>
+    <meta name="keywords" content="@Model.Keywords" />
+    <meta name="description" content="@Model.Description" />
+    <link rel="stylesheet" href="@Url.Content("~/content/site/css/main.css")">
+    <link rel="stylesheet" href="@Url.Content("~/content/site/libs/slick/slick.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/content/site/libs/fancybox/jquery.fancybox.css")">
+</head>
+<body class="index">
+    <header class="container">
+        <div class="col-50">
+            <a href="@Url.Content("~/")" class="logo"><span>Федерация волейбола города Краснодара</span>
+            <div class="logo-static"></div>
+        <div id="flashContent">
+
+			<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
+			codebase="http://download.macromedia.com/pub/shockwave/ cabs/flash/swflash. cab#version=6,0,29,0" width="800" height="700">
+			<PARAM name="movie" value="11.swf">
+			<PARAM name="quality" value="high">
+			<EMBED src="11.swf"
+			 
+			QUALITY="best" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" 
+			TYPE="application/x-shockwave-flash" width="377" height="69" wmode="transparent"></EMBED>
+			</OBJECT>
+
+        </div>
+            </a>
+        </div>
+        <div class="col-xs-3 tc header-contacts">
+            <p><span class="location-icon">@settings["adres"]</span></p>
+            <p><span class="phone-icon">@settings["telefon-1"]</span> <span class="fax-icon">@settings["telefon-2"]</span></p>
+            <p><span class="mail-icon"><a href="mailto:@settings["email"]">@settings["email"]</a></span></p>
+        </div>
+    </header>
+
+    <nav class="container">
+        <ul>
+            <li><a href="@Url.Content("~/novosti")">Новости</a></li>
+            @foreach(var item in glavnoe_menyu)
+            {
+                if (item.IsFirst) { continue; }
+                
+            <li class="@(Model.ExistsInParents(item) ? "active" : null)"><a href="@item.Url">@item.Link</a></li>
+            }
+        </ul>
+    </nav>
+    @RenderBody()
+    <footer>
+        <div class="container">
+            <div class="footer-nav">
+                <ul>
+                    @foreach (var item in glavnoe_menyu)
+                    {
+                        <li class="@(Model.ExistsInParents(item) ? "active" : null)"><a href="@item.Url">@item.Link</a></li>
+                    }
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-xs-5">
+                    <p class="copy">@settings["kopirajt"]</p>
+                </div>
+                <div class="col-xs-7">
+                    <div class="contact-items">
+                        <p class="location">@settings["adres"]</p>
+                        <a href="tel:@IcbcodeUtility.NormalizePhoneNumber(settings["telefon-1"])" class="phone">@settings["telefon-1"]</a>
+                        <a href="tel:@IcbcodeUtility.NormalizePhoneNumber(settings["telefon-2"])" class="fax">@settings["telefon-2"])</a>
+                        <a href="mailto:@settings["email"]" class="mail">@settings["email"]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script src="@Url.Content("~/content/site/js/jquery.js")"></script>
+    <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&amp;lang=ru-RU" type="text/javascript"></script>
+    <script src="@Url.Content("~/content/site/js/jquery.inputmask.js")"></script>
+    <script src="@Url.Content("~/content/site/js/youtube-prew.js")"></script>
+    <script src="@Url.Content("~/content/site/libs/slick/slick.js")"></script>
+    <script src="@Url.Content("~/content/site/js/jquery.nice-select.min.js")"></script>
+    <script src="@Url.Content("~/content/site/libs/fancybox/jquery.fancybox.pack.js")"></script>
+    <!-- modal -->
+    <script src="@Url.Content("~/content/site/libs/fancybox/helpers/jquery.fancybox-media.js")"></script>
+    <script src="@Url.Content("~/content/site/js/tabs.js")"></script>
+    <script src="@Url.Content("~/content/site/js/flash_detect_min.js")"></script>
+    <script src="@Url.Content("~/content/site/js/init.js")"></script>
+    <!-- Init Scripts -->
+    @Html.Raw(settings["yandeks-metrika"])
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Импорт данных из CSV";
+    Layout = "~/Areas/CMS/Views/Shared/_LayoutMain.cshtml";
+}
+
+<form action="@Url.Action("Import", "Content")" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="@ViewBag.content_root" name="content_root" />
+    <input type="hidden" value="@ViewBag.block_id" name="block_id" />
+    <input type="hidden" value="@ViewBag.domain_id" name="domain_id" />
+    <table class="edit_table" width="100%"  cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="first"><b>Файл:</b></td>
+            <td>
+                <input type="file" name="file" />
+            </td>
+        </tr>
+        @if (ViewBag.templates != null)
+        {
+        <tr>
+            <td class="first">Шаблон данных:</td>
+            <td>
+                <select name="content_template">
+                    @foreach (var template in ViewBag.templates)
+                    {
+                    <option value="@template.template_id" @if (ViewBag.current_template != null && template.template_id == ViewBag.current_template.template_id)
+                                                            {<text>selected="selected"</text>}>@template.template_friendly_name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        }
+        @if (ViewBag.content_views != null && ViewBag.content_views.Count > 0)
+        {
+        <tr @if (ViewBag.content_views.Count == 1)
+            {<text>style="display:none;"</text>}>
+            <td class="first">Представление:</td>
+            <td>
+                <select name="content_view">
+                    @foreach (var view in ViewBag.content_views)
+                    {
+                    <option value="@view.view_id" @if (ViewBag.item != null && view.view_id == ViewBag.item.content_view)
+                                                    {<text>selected="selected"</text>}>@view.view_friendly_name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="first">&nbsp;</td>
+            <td>
+                <button type="submit" class="button_element">Импорт</button>
+            </td>
+        </tr>
+        }
+    </table>
+</form>

@@ -1,0 +1,83 @@
+﻿@model IcbcodeContent
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Breadcrumbs")
+
+<div class="container">
+    <div class="page-container">
+        <div class="content-wrap">
+            @* @Html.Partial("_LeftColumn") *@
+            <div class="content full-width">
+                @* full-width / right *@
+                <div class="content-title and-social">
+                    <h3 class="title">@Model.H1</h3>
+                    <div class="social">
+                        @Html.Partial("_Social")
+                    </div>
+                </div>
+                @if (Model.Url.StartsWith("/foto"))
+                {
+                    <div class="photo-gallery">
+                        <div class="row">
+                            @if (Model.Template == "media")
+                            {
+                                var fotoalbums = IcbcodeContent.Get(new string[] { "foto" }, order_fields: "content_publish desc, content_id desc");
+                            
+                                foreach(var item in fotoalbums)
+                                {
+                                    var image = item.GetImage();
+                                    
+                                <div class="col-xs-4">
+                                    <a href="@item.Url">
+                                        @if(image != null)
+                                        {
+                                        <img src="@image.Url?w=293&h=223&mode=crop" alt="@item.Link" />
+                                        }
+                                        <p class="shot-photo">@item.Link</p>
+                                    </a>
+                                </div>
+                                }
+                            }
+                            else
+                            {
+                                var images = Model.GetImages();
+                                
+                                foreach(var item in images)
+                                {
+                                <div class="col-xs-4">
+                                    <a href="@item.Url" class="fancybox" rel="gallery">
+                                        <img src="@item.Url?w=293&h=223&mode=crop" alt="@item.Description" />
+                                        <p class="shot-photo">@item.Description</p>
+                                    </a>
+                                </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    var videos = IcbcodeContent.Get(new string[] { "video" }, order_fields: "content_publish desc, content_id desc");
+                    
+                    <div class="video-gallery">
+                        <div class="row">
+                            @foreach(var item in videos)
+                            {
+                            <div class="col-xs-6">
+                                <a rel="nofollow" href="@IcbcodeUtility.NormalizeUrl(item.UserDefined.ssilka_na_youtube)" class="fancybox-media youtube-video">
+                                    <div class="img-wrap">
+                                        <img src="#" class="youtube-prew">
+                                        <p class="shot-video">@item.Link</p>
+                                    </div>
+                                </a>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

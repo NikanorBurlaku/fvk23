@@ -1,0 +1,58 @@
+﻿@model IcbcodeContent
+@{
+    var image = Model.GetImage(new string[] { "kartinka" });
+
+    var images = Model.GetImages();
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Breadcrumbs")
+
+<div class="container">
+    <div class="page-container">
+        <div class="content-wrap">
+            @* @Html.Partial("_LeftColumn") *@
+            <div class="content full-width">
+                @* full-width / right *@
+                <div class="content-title and-social">
+                    <h3 class="title">@Model.H1</h3>
+                    <div class="social">
+                        @Html.Partial("_Social")
+                    </div>
+                </div>
+                @if (image != null)
+                {
+                    <div class="image-block">
+                        <div class="shot-text">
+                            <h3>@Model.H1</h3>
+                        </div>
+                        <img src="@image.Url?maxwidth=940" alt="@image.Description" />
+                    </div>
+                }
+                @if (Model.Publish.HasValue)
+                {
+                    <p class="date">@Model.Publish.Value.ToString("dd MMMM yyyy")</p>
+                }
+                <div class="shot-text-page">
+                    @Html.Raw(Model.ShortText)
+                </div>
+                @Html.Raw(Model.Text)
+                <div class="photo-gallery">
+                    <div class="row">
+                        @foreach (var item in images)
+                        {
+                            <div class="col-xs-4">
+                                <a href="@item.Url?maxwidth=1400" class="fancybox" rel="gallery">
+                                    <img src="@item.Url?w=293&h=223&mode=crop" alt="@item.Description" />
+                                    <p class="shot-photo">@item.Description</p>
+                                </a>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

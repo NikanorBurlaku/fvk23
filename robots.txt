@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Host: fvk23.ru

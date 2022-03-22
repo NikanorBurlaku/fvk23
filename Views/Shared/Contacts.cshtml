@@ -1,0 +1,24 @@
+﻿@model IcbcodeContent
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Breadcrumbs")
+
+<div class="container">
+    <div class="page-container">
+        <div class="content-wrap">
+            @* @Html.Partial("_LeftColumn") *@
+            <div class="content full-width">
+                @* full-width / right *@
+                <div class="content-title and-social">
+                    <h3 class="title">@Model.H1</h3>
+                    <div class="social">
+                        @Html.Partial("_Social")
+                    </div>
+                </div>
+                @Html.Raw(Model.Text)
+            </div>
+        </div>
+    </div>
+</div>

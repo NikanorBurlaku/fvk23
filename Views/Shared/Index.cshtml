@@ -1,0 +1,184 @@
+﻿@model IcbcodeContent
+@{
+    var novosti = IcbcodeContent.Get(new string[] { "novosti" }, order_fields: "content_publish desc, content_id desc", size: 4);
+
+    var kalendarnij_plan = IcbcodeContent.Get(new string[] { "kalendarnij-plan" }, order_fields: "content_publish desc, content_id desc", size: 5);
+
+    var foto = IcbcodeContent.Get(new string[] { "foto" }, order_fields: "content_publish desc, content_id desc", size: 5);
+
+    var video = IcbcodeContent.Get(new string[] { "video" }, order_fields: "content_publish desc, content_id desc", size: 1).FirstOrDefault();
+
+    var banners = IcbcodeContent.Get(new string[] { "banneri-na-glavnoj" });
+
+    var turniri = IcbcodeContent.Get(new string[] { "turniri" }, new string[] { "stranica-spisok" });
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="index-slider container">
+    @foreach (var item in novosti)
+    {
+        var image = item.GetImage(new string[] { "kartinka" });
+        
+        <div>
+            <a href="@item.Url">
+                @if (image != null)
+                {
+                    <img src="@image.Url?w=1002&h=453&mode=crop" alt="@image.Description" />
+                }
+                <div class="shot-box">
+                    <div class="slide-text">
+                        <h4 class="new-title">@item.Link</h4>
+                        @Html.Raw(item.ShortText)
+                    </div>
+                    <p class="date">@item.Publish.Value.ToString("dd MMM ‘yy")</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<div class="news-index container">
+    <div class="row news-prews">
+        @foreach (var item in novosti)
+        {
+            var image = item.GetImage(new string[] { "kartinka" });
+        
+            <div class="col-xs-3">
+                <a class="new">
+                    @if (image != null)
+                    {
+                        <img src="@image.Url?w=211&h=247&mode=crop" alt="@image.Description" />
+                    }
+                    <div class="shot-text">
+                        <p class="date">@item.Publish.Value.ToString("dd MMM ‘yy")</p>
+                        <p>@item.Link</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="container">
+    <div class="index-content">
+        <div class="content index-content-text">
+            <h1 class="big-title">@Model.H1</h1>
+            @Html.Raw(Model.Text)
+        </div>
+        <div class="calendar-plan">
+            <h3 class="module-title big-module-title">Календарный план</h3>
+            <ul>
+                @foreach (var item in kalendarnij_plan)
+                {
+                    <li>
+                        <p class="date">@item.Publish.Value.ToString("dd/M/yyyy")</p>
+                        <a href="@item.Url">@item.Link</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="media-box container">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="photo">
+                <div class="module-top">
+                    <h3 class="title">Фото</h3>
+                    <a href="@Url.Content("~/foto")">Все фото</a>
+                </div>
+                <div class="photo-slider">
+                    @foreach (var item in foto)
+                    {
+                        var image = item.GetImage();
+                        
+                        <div>
+                            <a href="@item.Url">
+                                @if (image != null)
+                                {
+                                    <img src="@image.Url?w=409&h=299&mode=crop" alt="@image.Description" />
+                                }
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="video">
+                <div class="module-top">
+                    <h3 class="title">Видео</h3>
+                    <a href="@Url.Content("~/video")">Все видео</a>
+                </div>
+                @if (video != null)
+                {
+                    <a rel="nofollow" href="@IcbcodeUtility.NormalizeUrl(video.UserDefined.ssilka_na_youtube)" class="fancybox-media youtube-video">
+                        <div class="img-wrap">
+                            <img src="#" height="299" class="youtube-prew" />
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (turniri.Count > 0)
+{
+    <div class="index-tabs container">
+
+        <ul class="nav nav-tabs" role="tablist" id="myTab">
+            @foreach (var item in turniri)
+            {
+                <li role="presentation" class="@(item.IsFirst ? "active" : null)"><a href="#tab@(item.Index)" aria-controls="tab@(item.Index)" role="tab" data-toggle="tab">@item.Link</a></li>
+            }
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            @foreach (var item in turniri)
+            {   
+                <div role="tabpanel" class="tab-pane @(item.IsFirst ? "active" : null)" id="tab@(item.Index)">
+                    @foreach (var sub_item in item.Childs(size: 1))
+                    {
+                        var image = sub_item.GetImage(new string[] { "kartinka" }); if (image == null) { continue; }
+                
+                        <a href="@sub_item.Url" class="banner">
+                            <img src="@image.Url?w=985&h=353&mode=crop" /></a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="social-box container">
+    <p class="social-text">Поделиться с друзьями в соцсетях:</p>
+    <div class="social-wrap">
+        @Html.Partial("_Social")
+    </div>
+</div>
+
+@if (banners.Count > 0)
+{
+    <div class="partners-block container">
+        <ul>
+            @foreach (var item in banners)
+            {
+                var image = item.GetImage(new string[] { "kartinka" }); if (image == null) { continue; }
+
+                if (item.IsRedirect)
+                {
+                <li><a href="@item.Url" target="_blank">
+                    <img src="@image.Url?maxheight=65" /></a></li>
+                }
+                else
+                {
+                <li>
+                    <img src="@image.Url?maxheight=65" /></li>
+                }
+            }
+        </ul>
+    </div>
+}
